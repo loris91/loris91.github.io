@@ -1,0 +1,361 @@
+
+<!DOCTYPE html>
+<html>
+ <head> 
+  <title>Playground</title> 
+  <style>
+    body{
+      margin: 0;
+      overflow: hidden;
+    }
+
+    #stats {  /* Align stats top-left */
+      position: absolute;
+      left: 0px;
+      top: 0px;
+    }
+  </style> 
+  </head>
+  <body>
+  <!-- JavaScript libraries -->
+  <script src="assets/libs/three.min.js"></script> 
+  <script src="assets/libs/jquery.min.js"></script>
+  <script src="assets/libs/Stats.min.js"></script>
+  <script src="assets/libs/dat.gui.min.js"></script>
+  <script src="assets/libs/TrackballControls.js"></script>
+  <script src="assets/libs/PointerLockControls.js"></script>
+  <script src="assets/libs/tween.min.js"></script>
+  <script src="assets/libs/OBJLoader.js"></script> 
+  <script src="assets/libs/MTLLoader.js"></script>
+  <script src="assets/libs/OBJMTLLoader.js"></script>
+  <!-- Javascript code that runs our Three.js examples --> 
+  <script>
+    // once everything is loaded, we run our Three.js stuff.
+    $(function () {
+
+      var stats = initStats();
+
+      // create a scene, that will hold all our elements such as objects, cameras and lights.
+      var scene = new THREE.Scene();
+
+      // create a camera, which defines where we're looking at.
+      var camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 10000);
+
+      // create trackball controls
+      var trackballControls = new THREE.TrackballControls(camera);
+
+      // create a render and set the size
+      var webGLRenderer = new THREE.WebGLRenderer();
+      webGLRenderer.setClearColor(new THREE.Color(0xeeeeee, 1.0));
+      webGLRenderer.setSize(window.innerWidth, window.innerHeight);
+
+      // position and point the camera to the center of the scene
+      camera.position.set(0,180,500);
+      camera.up = new THREE.Vector3(0,0,1);
+      camera.lookAt(scene.position);
+
+      // add spotlights
+      var spotLight1 = new THREE.DirectionalLight(0xffffff);
+      spotLight1.position.set(-3000, 4000, 5000);
+      spotLight1.intensity = 1;
+      scene.add(spotLight1);
+
+      var spotLight2 = new THREE.DirectionalLight(0xffffff);
+      spotLight2.position.set(3000, -4000, -5000);
+      spotLight2.intensity = 1;
+      scene.add(spotLight2);
+
+      // add the output of the renderer to the html element
+      $('body').append(webGLRenderer.domElement);
+
+      var objectsss = [];
+
+      var axisHelper = new THREE.AxisHelper(1000);
+      scene.add(axisHelper); 
+
+      var planeG = new THREE.PlaneGeometry(1000,1000,100,100);
+      var planeM = new THREE.MeshBasicMaterial({color: 0x000000, wireframe: true});
+      var plane = new THREE.Mesh(planeG,planeM);
+      scene.add(plane);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function createMesh(geom, imageFile, bump, mapping, mapX, mapY) {
+  var texture = THREE.ImageUtils.loadTexture("assets/textures/" + imageFile)
+  geom.computeVertexNormals();
+  var mat = new THREE.MeshPhongMaterial();
+  mat.map = texture;
+
+  if (bump) {
+    var bump = THREE.ImageUtils.loadTexture("assets/textures/" + bump)
+    mat.bumpMap = bump;
+    mat.bumpScale = 0.2;
+  }
+  
+  var mesh = new THREE.Mesh(geom, mat);
+
+  if (mapping) {
+    mesh.material.map.repeat.set(mapX,mapY);
+    mesh.material.map.wrapS = THREE.RepeatWrapping;
+    mesh.material.map.wrapT = THREE.RepeatWrapping; 
+  }
+
+  return mesh;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function make_Double_Door() {
+
+  var suppDx = new THREE.Mesh(new THREE.BoxGeometry(12,6,209),new THREE.MeshLambertMaterial({color: 0xffffff}));
+  var suppSx = new THREE.Mesh(new THREE.BoxGeometry(12,6,209),new THREE.MeshLambertMaterial({color: 0xffffff}));
+  var suppUp = new THREE.Mesh(new THREE.BoxGeometry(12,125,6),new THREE.MeshLambertMaterial({color: 0xffffff}));
+
+  var doorDx = new THREE.Mesh(new THREE.BoxGeometry(8,58,209),new THREE.MeshLambertMaterial({color: 0xffffff}));
+  var doorSx = new THREE.Mesh(new THREE.BoxGeometry(8,55,209),new THREE.MeshLambertMaterial({color: 0xffffff}));
+
+  var frame = new THREE.Object3D();
+  frame.add(suppSx);      
+  frame.add(suppDx);      
+  frame.add(suppUp);
+  suppUp.position.set(0,0,212);
+  suppSx.position.set(0,-59.5,104.5);
+  suppDx.position.set(0,59.5,104.5);
+
+
+  var hookDx = new THREE.Object3D();
+  frame.hookDx = hookDx;
+  suppDx.add(hookDx);
+  hookDx.add(doorDx);
+  doorDx.position.y = -32; 
+
+  var hookSx = new THREE.Object3D();
+  frame.hookSx = hookSx;
+  suppSx.add(hookSx);
+  hookSx.add(doorSx);
+  doorSx.position.y = 30; 
+
+  doorSx.isClose = true;
+  doorDx.isClose = true;
+
+
+  var cilindretto = new THREE.Mesh(new THREE.CylinderGeometry(2,2,10,10,10), 
+  new THREE.MeshPhongMaterial({specular: 0xffffff, color: 0xDAA520, shininess: 100, metal: true}));
+  cilindretto.position.set(0,-25,-8);
+  cilindretto.rotation.z = Math.PI/2;
+  doorDx.add(cilindretto);
+
+
+  var maniglia = new THREE.Object3D();
+
+  var cilinder1 = new THREE.Mesh(new THREE.CylinderGeometry(2,2,10,10,10), 
+    new THREE.MeshPhongMaterial({specular: 0xffffff, color: 0xDAA520, shininess: 100, metal: true}));
+  var cilinder2 = new THREE.Mesh(new THREE.CylinderGeometry(1,1,16,10,10), 
+    new THREE.MeshPhongMaterial({specular: 0xffffff, color: 0xDAA520, shininess: 100, metal: true}));
+
+  var stick1 = new THREE.Mesh(new THREE.BoxGeometry(13,1,.5), 
+    new THREE.MeshPhongMaterial({specular: 0xffffff, color: 0xc0c0c0, shininess: 100, metal: true}));
+  var stick2 = new THREE.Mesh(new THREE.BoxGeometry(13,1,.5), 
+    new THREE.MeshPhongMaterial({specular: 0xffffff, color: 0xc0c0c0, shininess: 100, metal: true}));
+
+  var handle1 = new THREE.Mesh(new THREE.CylinderGeometry(.8,.8,9,10,10), 
+    new THREE.MeshPhongMaterial({specular: 0xffffff, color: 0xDAA520, shininess: 100, metal: true}));
+  var handle2 = new THREE.Mesh(new THREE.CylinderGeometry(.8,.8,9,10,10), 
+    new THREE.MeshPhongMaterial({specular: 0xffffff, color: 0xDAA520, shininess: 100, metal: true}));
+
+  maniglia.add(cilinder1);
+  maniglia.add(cilinder2);
+  cilinder2.add(stick1);
+  cilinder2.add(stick2);
+
+  stick1.position.set(4.5,-8,0);
+  stick2.position.set(4.5,8,0);
+
+  handle1.rotation.z = Math.PI/2;
+  handle2.rotation.z = Math.PI/2;
+  handle1.position.set(2,.5,0);
+  handle2.position.set(2,-.5,0);
+
+  stick1.add(handle1);
+  stick2.add(handle2);
+
+  maniglia.position.set(0,-25,0);
+  maniglia.rotation.z = Math.PI/2;
+  doorDx.add(maniglia);
+
+
+
+
+
+
+    // Gestisco le animazioni per la porta
+  doorDx.animate = function() {
+    if (doorDx.isClose) {
+      this.open_door.start();
+      doorDx.isClose = false;
+    } else {
+      this.close_door.start();
+      doorDx.isClose = true;
+    }
+  }
+
+  doorSx.animate = function() {
+    if (doorSx.isClose) {
+      this.open_door.start();
+      doorSx.isClose = false;
+    } else {
+      this.close_door.start();
+      doorSx.isClose = true;
+    }
+  }
+
+  doorDx.open_door = new TWEEN.Tween(frame.hookDx.rotation)
+   .to({ z: -0.5*Math.PI}, 1000)
+
+  doorDx.close_door = new TWEEN.Tween(frame.hookDx.rotation)
+   .to({ z: 0*Math.PI}, 1000)
+
+  doorSx.open_door = new TWEEN.Tween(frame.hookSx.rotation)
+   .to({ z: 0.5*Math.PI}, 1000)
+
+  doorSx.close_door = new TWEEN.Tween(frame.hookSx.rotation)
+   .to({ z: 0*Math.PI}, 1000)
+
+
+
+
+
+  return(frame);
+  
+}
+
+      var porta1 = make_Double_Door();
+      scene.add(porta1);
+
+      var porta2 = make_Double_Door();
+      porta2.position.y = 200;
+      scene.add(porta2);
+
+      console.log(porta1);
+
+      objectsss.push(porta1.children[0].children[0].children[0]);
+      objectsss.push(porta1.children[1].children[0].children[0]);
+      objectsss.push(porta2.children[0].children[0].children[0]);
+      objectsss.push(porta2.children[1].children[0].children[0]);
+    
+
+       render();
+
+
+      function render() {
+        stats.update();
+        trackballControls.update();
+        TWEEN.update();
+
+        // render using requestAnimationFrame
+        requestAnimationFrame(render);
+        webGLRenderer.render(scene, camera);
+      }
+
+      var projector = new THREE.Projector();
+      document.addEventListener('mousedown', onDocumentMouseDown, false);
+
+      function onDocumentMouseDown(event) {
+        event.preventDefault();
+
+        // map viewport coordinates in ([-1,1], [-1,1], 0.5)
+        var vector = new THREE.Vector3(( event.clientX / window.innerWidth ) * 2 - 1, -( event.clientY / window.innerHeight ) * 2 + 1, 0.5);
+        projector.unprojectVector(vector, camera);
+
+        var raycaster = new THREE.Raycaster(camera.position, vector.sub(camera.position).normalize());
+
+        var intersects = raycaster.intersectObjects(objectsss);
+
+        if (intersects.length > 0) {
+          intersects[0].object.animate();
+        }
+      }
+
+
+
+
+
+          
+      function initStats() {
+        var stats = new Stats();
+        stats.setMode(0); // 0: fps, 1: ms
+        $('body').append(stats.domElement);
+        return stats;
+      }
+    });
+  </script>  
+ </body>
+</html>

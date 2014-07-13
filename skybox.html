@@ -1,0 +1,73 @@
+
+<!DOCTYPE html>
+<html>
+ <head> 
+  <title>Appartamento - Loris Marsico</title> 
+  <style>
+    body{
+      margin: 0;
+      overflow: hidden;
+    }
+
+    #stats {  /* Align stats top-left */
+      position: absolute;
+      left: 0px;
+      top: 0px;
+    }
+  </style> 
+  </head>
+  <body>
+  <!-- JavaScript libraries -->
+  <script src="assets/libs/three.min.js"></script> 
+  <script src="assets/libs/jquery.min.js"></script>
+  <script src="assets/libs/Stats.min.js"></script>
+  <script src="assets/libs/dat.gui.min.js"></script>
+  <script src="assets/libs/TrackballControls.js"></script>
+  <script src="assets/libs/PointerLockControls.js"></script>
+  <script src="assets/libs/tween.min.js"></script>
+  <script src="assets/libs/OBJLoader.js"></script> 
+  <script src="assets/libs/MTLLoader.js"></script>
+  <script src="assets/libs/OBJMTLLoader.js"></script>
+
+  <!-- My JavaScript -->
+  <script src="scripts/Init.js"></script>
+
+
+
+  <script>
+    $(function() {
+
+function loadModel(name,scale,posX,posY,posZ) {
+  var loader = new THREE.OBJMTLLoader();
+  loader.addEventListener('load', function (event) {
+
+    var object = event.content;
+
+    object.scale.set(scale, scale, scale);
+    mesh = object;
+    house.add(mesh);
+
+    object.rotation.x = Math.PI/2;
+    object.rotation.y = -Math.PI/2;
+
+    object.position.set(posX,posY,posZ);
+  });
+
+
+  loader.load(
+    name + '.obj', 
+    {side: THREE.DoubleSide}
+  );
+};
+
+loadModel('Goku_SS3',20,0,0,0);
+
+
+      $('body').append(webGLRenderer.domElement);
+    });    
+  </script>
+
+  <!-- Appartament components -->
+ 
+ </body>
+</html>

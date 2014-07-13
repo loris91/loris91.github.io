@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+ <head> 
+  <title>Appartamento - Loris Marsico</title> 
+  <style>
+    body{
+      margin: 0;
+      overflow: hidden;
+    }
+
+    #stats {  /* Align stats top-left */
+      position: absolute;
+      left: 0px;
+      top: 0px;
+    }
+  </style> 
+  </head>
+  <body>
+  <!-- JavaScript libraries -->
+  <script src="assets/libs/three.min.js"></script> 
+  <script src="assets/libs/jquery.min.js"></script>
+  <script src="assets/libs/Stats.min.js"></script>
+  <script src="assets/libs/dat.gui.min.js"></script>
+  <script src="assets/libs/TrackballControls.js"></script>
+  <script src="assets/libs/PointerLockControls.js"></script>
+  <script src="assets/libs/tween.min.js"></script>
+  <script src="assets/libs/OBJLoader.js"></script> 
+  <script src="assets/libs/MTLLoader.js"></script>
+  <script src="assets/libs/OBJMTLLoader.js"></script>
+
+  <!-- My JavaScript -->
+<!--
+  <script src="scripts/Scene.js"></script>
+-->
+
+  <script src="scripts/Init.js"></script>
+  <script src="scripts/Utility.js"></script>
+  <script src="scripts/Video-Audio.js"></script>
+
+  
+
+  
+  <script src="scripts/Apartment.js"></script>
+ 
+ <!--
+  <script src="scripts/Painting.js"></script>
+  <script src="scripts/Make_Doors.js"></script>
+  <script src="scripts/Insert_Door.js"></script>
+
+
+  <script src="scripts/Make_Fixtures.js"></script>
+  <script src="scripts/Insert_Fixtures.js"></script> 
+-->
+
+  <script src="scripts/Insert_Models.js"></script>
+  <script src="scripts/Video-Audio_Animation.js"></script>
+
+
+
+
+  <script>
+    $(function() {
+      $('body').append(webGLRenderer.domElement);
+
+      render();
+
+      function render() {
+        stats.update();
+        TWEEN.update();
+
+        if (controls.Trackball) {
+          trackballControls.update();
+        } 
+
+        if ( video.readyState === video.HAVE_ENOUGH_DATA ) {
+          videoImageContext.drawImage( video, 0, 0 );
+          if ( videoTexture ) 
+            videoTexture.needsUpdate = true;
+        }
+
+        if ( video1.readyState === video1.HAVE_ENOUGH_DATA ) {
+          videoImageContext1.drawImage( video1, 0, 0 );
+          if ( videoTexture1 ) 
+            videoTexture1.needsUpdate = true;
+        }
+
+        if ( video1.readyState === video1.HAVE_ENOUGH_DATA ) {
+          videoImageContext1.drawImage( video1, 0, 0 );
+          if ( videoTexture1 ) 
+            videoTexture1.needsUpdate = true;
+        }
+
+        if ( video2.readyState === video2.HAVE_ENOUGH_DATA ) {
+          videoImageContext2.drawImage( video2, 0, 0 );
+          if ( videoTexture2 ) 
+            videoTexture2.needsUpdate = true;
+        }
+
+        if ( video3.readyState === video3.HAVE_ENOUGH_DATA ) {
+          videoImageContext3.drawImage( video3, 0, 0 );
+          if ( videoTexture3 ) 
+            videoTexture3.needsUpdate = true;
+        }
+
+
+        requestAnimationFrame(render);
+        webGLRenderer.render(scene, camera);
+      }
+
+    });    
+  </script>
+
+  <!-- Appartament components -->
+ 
+ </body>
+</html>
