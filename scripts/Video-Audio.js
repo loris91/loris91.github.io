@@ -2,6 +2,20 @@
 /// SOUNDS ///
 //////////////
 
+var open_door_audio = document.createElement('audio');
+var open_door_audio_source = document.createElement('source');
+open_door_audio_source.src = 'assets/sounds/open_door.mp3';
+open_door_audio.appendChild(open_door_audio_source);
+open_door_audio.loop = false;
+open_door_audio.onPlay = false;
+
+var close_door_audio = document.createElement('audio');
+var close_door_audio_source = document.createElement('source');
+close_door_audio_source.src = 'assets/sounds/close_door.mp3';
+close_door_audio.appendChild(close_door_audio_source);
+close_door_audio.loop = false;
+close_door_audio.onPlay = false;
+
 var guitar_audio = document.createElement('audio');
 var guitar_audio_source = document.createElement('source');
 guitar_audio_source.src = 'assets/sounds/beat.mp3';
@@ -16,6 +30,19 @@ microwave_audio.appendChild(microwave_audio_source);
 microwave_audio.loop = false;
 microwave_audio.onPlay = false;
 
+
+var mower_audio =  document.createElement('audio');
+var mower_audio_source = document.createElement('source');
+mower_audio_source.src = 'assets/sounds/mower.mp3';
+mower_audio.appendChild(mower_audio_source);
+mower_audio.loop = false;
+
+
+var coffee_audio =  document.createElement('audio');
+var coffee_audio_source = document.createElement('source');
+coffee_audio_source.src = 'assets/sounds/coffee.mp3';
+coffee_audio.appendChild(coffee_audio_source);
+coffee_audio.loop = false;
 
 
 
@@ -43,20 +70,7 @@ videoTexture = new THREE.Texture( videoImage );
 	videoTexture.minFilter = THREE.LinearFilter;
 	videoTexture.magFilter = THREE.LinearFilter;
 
-var movieMaterial = new THREE.MeshBasicMaterial( { map: videoTexture, overdraw: true } );
-var movieGeometry = new THREE.PlaneGeometry( 180, 96, 4, 4 );
-var movieScreen = new THREE.Mesh( movieGeometry, movieMaterial );
-	movieScreen.position.set(983, 760, 165);
-	movieScreen.rotation.x = Math.PI/2;
-	movieScreen.rotation.y = -Math.PI/2;
-	movieScreen.visible = false;
-	house.add(movieScreen);
 
-var diplay_salotto = new THREE.Mesh( movieGeometry, diplayMaterial );
-	diplay_salotto.position.set(983, 760, 165);
-	diplay_salotto.rotation.x = Math.PI/2;
-	diplay_salotto.rotation.y = -Math.PI/2;
-	house.add(diplay_salotto);
 
 
 /* Video della televisione in sala */
@@ -74,14 +88,7 @@ videoImageContext1 = videoImage1.getContext( '2d' );
 videoTexture1 = new THREE.Texture( videoImage1 );
 	videoTexture1.minFilter = THREE.LinearFilter;
 	videoTexture1.magFilter = THREE.LinearFilter;
-var movieMaterial1 = new THREE.MeshBasicMaterial( { map: videoTexture1, overdraw: true } );
-var movieGeometry = new THREE.PlaneGeometry( 120, 70, 4, 4 );
-var movieScreen1 = new THREE.Mesh( movieGeometry, movieMaterial1 );
-	movieScreen1.rotation.x = Math.PI/2;
-	movieScreen1.rotation.y = -0.2*Math.PI;
-	movieScreen1.position.set(945, 70, 153);
-	movieScreen1.visible = false;
-	house.add(movieScreen1);
+
 
 video2 = document.createElement( 'video' );
 	video2.src = "assets/videos/dragonball.ogv";
@@ -95,13 +102,7 @@ videoImageContext2 = videoImage2.getContext( '2d' );
 videoTexture2 = new THREE.Texture( videoImage2 );
 	videoTexture2.minFilter = THREE.LinearFilter;
 	videoTexture2.magFilter = THREE.LinearFilter;
-var movieMaterial2 = new THREE.MeshBasicMaterial( { map: videoTexture2, overdraw: true } );
-var movieScreen2 = new THREE.Mesh( movieGeometry, movieMaterial2 );
-	movieScreen2.rotation.x = Math.PI/2;
-	movieScreen2.rotation.y = -0.2*Math.PI;
-	movieScreen2.position.set(945, 70, 153);
-	movieScreen2.visible = false;
-	house.add(movieScreen2);
+
 
 video3 = document.createElement( 'video' );
 	video3.src = "assets/videos/totti.mp4";
@@ -115,10 +116,3 @@ videoImageContext3 = videoImage3.getContext( '2d' );
 videoTexture3 = new THREE.Texture( videoImage3 );
 	videoTexture3.minFilter = THREE.LinearFilter;
 	videoTexture3.magFilter = THREE.LinearFilter;
-var movieMaterial3 = new THREE.MeshBasicMaterial( { map: videoTexture3, overdraw: true } );
-var movieScreen3 = new THREE.Mesh( movieGeometry, movieMaterial3 );
-	movieScreen3.rotation.x = Math.PI/2;
-	movieScreen3.rotation.y = -0.2*Math.PI;
-	movieScreen3.position.set(945, 70, 153);
-	movieScreen3.visible = false;
-	house.add(movieScreen3);

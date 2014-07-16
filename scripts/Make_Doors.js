@@ -71,11 +71,13 @@ function make_White_Door() {
 	// Gestisco le animazioni per la porta
 	door.animate = function() {
 		if (door.isClose) {
-		  this.open_door.start();
-		  door.isClose = false;
+			open_door_audio.play();
+			this.open_door.start();
+			door.isClose = false;
 		} else {
-		  this.close_door.start();
-		  door.isClose = true;
+			close_door_audio.play();
+		  	this.close_door.start();
+		  	door.isClose = true;
 		}
 	}
 
@@ -174,9 +176,11 @@ function make_Double_Door() {
 	// Gestisco le animazioni per la porta
 	doorDx.animate = function() {
 		if (doorDx.isClose) {
+			open_door_audio.play();
 			this.open_door.start();
 			doorDx.isClose = false;
 		} else {
+			close_door_audio.play();
 			this.close_door.start();
 			doorDx.isClose = true;
 		}
@@ -184,11 +188,13 @@ function make_Double_Door() {
 
 	doorSx.animate = function() {
 		if (doorSx.isClose) {
-		this.open_door.start();
-		doorSx.isClose = false;
+			open_door_audio.play();
+			this.open_door.start();
+			doorSx.isClose = false;
 		} else {
-		this.close_door.start();
-		doorSx.isClose = true;
+			close_door_audio.play();
+			this.close_door.start();
+			doorSx.isClose = true;
 		}
 	}
 
@@ -296,11 +302,13 @@ function make_Security_Door() {
 	//Gestisco le animazioni per la porta
 	doorSx.animate = function() {
 		if (doorSx.isClose) {
-		  this.open_door.start();
-		  doorSx.isClose = false;
+			open_door_audio.play();
+			this.open_door.start();
+			doorSx.isClose = false;
 		} else {
-		  this.close_door.start();
-		  doorSx.isClose = true;
+			close_door_audio.play();
+			this.close_door.start();
+			doorSx.isClose = true;
 		}
 	}  
 

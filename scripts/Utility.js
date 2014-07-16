@@ -1,28 +1,3 @@
-/* Funzione che ritorna una mesh con texture */
-function createMesh(geom, imageFile, bump, mapping, mapX, mapY) {
-	var texture = THREE.ImageUtils.loadTexture("assets/textures/" + imageFile)
-	geom.computeVertexNormals();
-	var mat = new THREE.MeshPhongMaterial();
-	mat.map = texture;
-
-	if (bump) {
-	  var bump = THREE.ImageUtils.loadTexture("assets/textures/" + bump)
-	  mat.bumpMap = bump;
-	  mat.bumpScale = 0.2;
-	}
-	
-	var mesh = new THREE.Mesh(geom, mat);
-
-	if (mapping) {
-		mesh.material.map.repeat.set(mapX,mapY);
-		mesh.material.map.wrapS = THREE.RepeatWrapping;
-		mesh.material.map.wrapT = THREE.RepeatWrapping; 
-	}
-
-	return mesh;
-}
-
-
 /* Funzione che ritorna un oggetto 3D da un file obj */
 function makeRoom(path,callback) {
   var mesh;
@@ -65,3 +40,50 @@ function loadModel(name, scale, posX, posY, posZ, rot) {
     {side: THREE.DoubleSide}
   );
 };
+
+
+/* Funzione che ritorna un oggetto 3D da un file obj e mtl e l'ho aggiunge ad un oggetto passato */
+function loadModel2(name, obj, scale, posX, posY, posZ, rotX, rotY) {
+  var loader = new THREE.OBJMTLLoader();
+  loader.addEventListener('load', function (event) {
+
+    var object = event.content;
+
+    object.scale.set(scale, scale, scale);
+    obj.add(object);
+
+    object.rotation.x = Math.PI/2 * rotX;
+    object.rotation.y = Math.PI * rotY;
+
+    object.position.set(posX,posY,posZ);
+  });
+
+
+  loader.load(
+    'assets/models/'+ name + '.obj', 
+    'assets/models/'+ name +'.mtl', 
+    {side: THREE.DoubleSide}
+  );
+};
+
+
+/* Funzione che ritorna la gestione delle luci */
+function makeInternalLight(switcher, posX, posY, posZ) {
+  var light = new THREE.PointLight(0xeeeeaa, 0, 300);
+  light.position.set(posX,posY,posZ);
+  var target = new THREE.Object3D();
+  target.position.set(posX,posY,0);
+  light.target = target;
+  switcher.add(light);
+  switcher.inactive = true;
+  
+  switcher.animate = function() {
+    if (switcher.inactive) {
+      light.intensity = 2;
+      switcher.inactive = false;
+    } else {
+      light.intensity = 0;
+      switcher.inactive = true;
+    }
+  }
+}

@@ -29,20 +29,20 @@
   <script src="assets/libs/OBJMTLLoader.js"></script>
 
   <!-- My JavaScript -->
-<!--
   <script src="scripts/Scene.js"></script>
--->
+  <script src="scripts/Video-Audio.js"></script>
+
 
   <script src="scripts/Init.js"></script>
   <script src="scripts/Utility.js"></script>
-  <script src="scripts/Video-Audio.js"></script>
+  
 
   
 
   
   <script src="scripts/Apartment.js"></script>
  
- <!--
+
   <script src="scripts/Painting.js"></script>
   <script src="scripts/Make_Doors.js"></script>
   <script src="scripts/Insert_Door.js"></script>
@@ -50,9 +50,8 @@
 
   <script src="scripts/Make_Fixtures.js"></script>
   <script src="scripts/Insert_Fixtures.js"></script> 
--->
-
   <script src="scripts/Insert_Models.js"></script>
+  <script src="scripts/Insert_Internal_Lights.js"></script>
   <script src="scripts/Video-Audio_Animation.js"></script>
 
 
@@ -84,12 +83,6 @@
             videoTexture1.needsUpdate = true;
         }
 
-        if ( video1.readyState === video1.HAVE_ENOUGH_DATA ) {
-          videoImageContext1.drawImage( video1, 0, 0 );
-          if ( videoTexture1 ) 
-            videoTexture1.needsUpdate = true;
-        }
-
         if ( video2.readyState === video2.HAVE_ENOUGH_DATA ) {
           videoImageContext2.drawImage( video2, 0, 0 );
           if ( videoTexture2 ) 
@@ -102,9 +95,8 @@
             videoTexture3.needsUpdate = true;
         }
 
-
         requestAnimationFrame(render);
-        webGLRenderer.render(scene, camera);
+        webGLRenderer.render(scene, renderCamera);
       }
 
     });    
