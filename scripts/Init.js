@@ -23,7 +23,7 @@ function init() {
 
 	camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
 	camera.up = new THREE.Vector3(0, 1, 0);
-	camera.position.set(100, 60, 100);
+	camera.position.set(200, 10, -240);
 
 	// camera del tosaerba
 	var tosaErba_camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 10000);
@@ -126,8 +126,6 @@ function init() {
 			var sfera = createMesh(new THREE.SphereGeometry( 100, 64, 64 ), "lava.jpg", "lava_bump.jpg", true, 5, 5);
 			sfera.scale.set(0.001, 0.001, 0.001);
 			sfera.position.set(370 , 20, -170);			
-			console.log(sfera.position);
-			console.log(camera.position);
 			var lanciaSfera = new TWEEN.Tween(sfera.position)
 				.to({x: renderCamera.position.x,
 					 y: renderCamera.position.y,
@@ -256,7 +254,6 @@ function init() {
 		brano_audio4.updateVolume();
 		brano_audio5.updateVolume();
 		guitar_audio.updateVolume();
-
 		requestAnimationFrame(render);
 		renderer.render(scene, renderCamera);
 	}
