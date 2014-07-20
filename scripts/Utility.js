@@ -77,13 +77,37 @@ function makeInternalLight(switcher, posX, posY, posZ) {
   switcher.add(light);
   switcher.inactive = true;
   
-  switcher.animate = function() {
+  switcher.interact = function() {
     if (switcher.inactive) {
+      switch_light_audio.play();
       light.intensity = 2;
       switcher.inactive = false;
     } else {
+      switch_light_audio.play();
       light.intensity = 0;
       switcher.inactive = true;
     }
   }
+}
+
+
+function getOra() {
+  var data = new Date();
+  var h = data.getHours();
+  var m = data.getMinutes(); 
+
+  var text_Material = new THREE.MeshPhongMaterial({color: 0x0000ff});        
+  var options = {
+    size: 5,
+    height: 2,
+    font: "helvetiker",
+    weight: "normal",
+    curveSegments: 20
+  };        
+  var text_Geo = new THREE.TextGeometry(h + " : " + m, options);
+  var text = new THREE.Mesh(text_Geo, text_Material); 
+
+  text.rotation.x = Math.PI * 0.40;      
+  text.position.set(-15,-5,2);
+  return (text);
 }

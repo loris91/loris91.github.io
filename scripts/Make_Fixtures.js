@@ -77,7 +77,7 @@ function make_Single_Window() {
   corniceInterna.add(glass);
   glass.position.set(35,65,3);
 
-  finestra.animate = function() {
+  finestra.interact = function() {
     if(this.isClose) {
       this.open_window.start();
       this.isClose = false;
@@ -88,12 +88,12 @@ function make_Single_Window() {
   }
 
 
-  glass.animate = function() {
-    finestra.animate();
+  glass.interact = function() {
+    finestra.interact();
   };
 
-  corniceInterna.animate = function() {
-    finestra.animate();
+  corniceInterna.interact = function() {
+    finestra.interact();
   }
 
   finestra.open_window = new TWEEN.Tween(finestra.hook.rotation)
@@ -201,11 +201,11 @@ function make_Double_Window() {
   antaSx.isClose = true;
 
 
-  glassDx.animate = function() {
-    antaDx.animate();
+  glassDx.interact = function() {
+    antaDx.interact();
   }
 
-  antaDx.animate = function() {
+  antaDx.interact = function() {
     if(this.isClose) {
       this.open_antaDx.start();
       this.isClose = false;
@@ -215,11 +215,11 @@ function make_Double_Window() {
     }
   }
 
-  glassSx.animate = function() {
-    antaSx.animate();
+  glassSx.interact = function() {
+    antaSx.interact();
   }
 
-  antaSx.animate = function() {
+  antaSx.interact = function() {
     if(this.isClose) {
       this.open_antaSx.start();
       this.isClose = false;
@@ -344,11 +344,11 @@ function make_Triple_Window() {
   glassFisso.position.set(40,65,3);
 
 
-  glassDx.animate = function() {
-    antaDx.animate();
+  glassDx.interact = function() {
+    antaDx.interact();
   }
 
-  antaDx.animate = function() {
+  antaDx.interact = function() {
     if(this.isClose) {
       this.open_antaDx.start();
       this.isClose = false;
@@ -358,11 +358,11 @@ function make_Triple_Window() {
     }
   }
 
-  glassSx.animate = function() {
-    antaSx.animate();
+  glassSx.interact = function() {
+    antaSx.interact();
   }
 
-  antaSx.animate = function() {
+  antaSx.interact = function() {
     if(this.isClose) {
       this.open_antaSx.start();
       this.isClose = false;
@@ -478,19 +478,19 @@ function make_Balcony() {
   glassDown.position.set(40,165,3);
 
 
-  glassUp.animate = function() {
-    balcone.animate();
+  glassUp.interact = function() {
+    balcone.interact();
   }
 
-  glassDown.animate = function() {
-    balcone.animate();
+  glassDown.interact = function() {
+    balcone.interact();
   }
 
-  anta.animate = function() {
-    balcone.animate();
+  anta.interact = function() {
+    balcone.interact();
   }
 
-  balcone.animate = function() {
+  balcone.interact = function() {
     if(this.isClose) {
       this.open_balcony.start();
       this.isClose = false;

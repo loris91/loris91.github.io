@@ -1,200 +1,272 @@
-var stats = initStats();
+var controls;
+var FPenabled = false;
 
-// creazione della scena
-var scene = new THREE.Scene();
+function init() {
+	scene = new THREE.Scene();
 
-// creazione della camera
-var camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 50000);
-	camera.position.set(1200,400,200);
-	camera.up = new THREE.Vector3(0,0,1);
-	camera.lookAt(scene.position);
-
-// creazione della camera del tosaerba
-var tosaErba_camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 10000);
-
-// creo una variabile in cui inserisco la camera da renderizzare 
-var renderCamera = camera;
-
-// aggiunta del trackball controls
-var trackballControls = new THREE.TrackballControls(camera);
-
-// creazione del renderer
-var webGLRenderer = new THREE.WebGLRenderer();
-	webGLRenderer.setClearColor(new THREE.Color(0xeeeeee, 1.0));
-	webGLRenderer.setSize(window.innerWidth, window.innerHeight);
-
-// aggiungo 4 luci direzionali alla scena
-var light1 = new THREE.DirectionalLight(0xffffff);
-	light1.position.set(5000, 5000, 1000);
-	light1.intensity = 0.2;
-	scene.add(light1);
-
-var light2 = new THREE.DirectionalLight(0xffffff);
-	light2.position.set(5000, -5000, 1000);
-	light2.intensity = 0.2;
-	scene.add(light2);
-
-var light3 = new THREE.DirectionalLight(0xffffff);
-	light3.position.set(-5000, -5000, 1000);
-	light3.intensity = 0.2;
-	scene.add(light3);
-
-var light4 = new THREE.DirectionalLight(0xffffff);
-	light4.position.set(-5000, 5000, 1000);
-	light4.intensity = 0.2;
-	scene.add(light4);
-
-var light5 = new THREE.DirectionalLight(0xffffff);
-	light5.position.set(0, 0, 2000);
-	light5.intensity = 0.2;
-	scene.add(light5);
-
-// add axis helper
-var axisHelper = new THREE.AxisHelper(1000);
-	scene.add(axisHelper); 
-
-// array degli oggetti animati
-var objects = [];
+	clock = new THREE.Clock();
 
 
-// aggiungo il componente principale per la scena
-var house = new THREE.Object3D();
+	// aggiungo 2 luci direzionali alla scena
+	var light = new THREE.DirectionalLight(0xffffff);
+		light.position.set(0, 1400, -1500);
+		light.intensity = 2;
+		scene.add(light);
+
+	var light2 = new THREE.DirectionalLight(0xffffff);
+		light2.position.set(0, 1400, 1500);
+		light2.intensity = 0.5;
+		scene.add(light2);
+
+
+
+
+	camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
+	camera.up = new THREE.Vector3(0, 1, 0);
+	camera.position.set(100, 60, 100);
+
+	// camera del tosaerba
+	var tosaErba_camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 10000);
+
+	renderCamera = camera;
+	scene.add(renderCamera);
+
+
+	trackballControls = new THREE.TrackballControls(camera);
+
+	var broke_display = makeBrokeDisplay();
+	house = new THREE.Object3D();
+	var esternalLights = makeEsternalLights();
+	var tosaErba = new THREE.Object3D();
+		tosaErba.add(tosaErba_camera);
+	makeTosaErba(tosaErba);
+
+	var tetto = makeRoof();
+
+	makeHouse(house); // carico la struttura portante della casa
+	insertDoors(house); // inserisco le porte 
+	insertFixtures(house); // inserisco finestre e balconi
+	insertInternalLights(house); // aggiungo le luci interne
+	insertModels(house); // inserisco i modelli d'arredo
+	insertAudioVideoAnimation(house); // aggiungo le animazioni audio-video
+	paintingHouse(house); // aggiungo le texture a pavimenti e pareti
+	
+	house.add(esternalLights);
+	house.add(tosaErba);
+	house.add(makeGrass());
+
+	
+	house.rotation.x = -Math.PI/2;
+	house.position.set(0, -100, 0);
+	house.scale.set(0.6,0.6,0.6);
 	scene.add(house);
 
-// aggiungo una skybox
-var skybox = makeSkyBox('oasisday_');
-	scene.add(skybox);
+	// Sfere energetiche
+	var engineSx = new ParticleEngine();
+	engineSx.setValues( Examples.candleSx );			
+	engineSx.initialize();
+	engineSx.destroy();
 
-// aggiungo il giardino
-var garden = makeGrass();
-	garden.position.z = 35;
-	scene.add(garden);
-
-//aggiungo le luci esterne
-var esternalLights = makeEsternalLights();
-	house.add(esternalLights);
+	var engineDx = new ParticleEngine();
+	engineDx.setValues( Examples.candleDx );  			
+	engineDx.initialize();
+	engineDx.destroy();
 
 
+	var daySkybox = makeSkyBox("oasisday_");
+	var nightSkybox = makeSkyBox("oasisnight_");
+	scene.add(daySkybox);
 
-// aggiungo un elemento alla casa
-var tosaErba = new THREE.Object3D();
-tosaErba.animate = function() {
-	mower_audio.play();
-	var goWest = new TWEEN.Tween(tosaErba.position)
-		.to({ x: -1600}, 5000)
-	var goSud = new TWEEN.Tween(tosaErba.position)
-		.chain(goWest)
-		.to({ y: -1400}, 5000)
-	var goEst = new TWEEN.Tween(tosaErba.position)
-		.chain(goSud)
-		.to({ x: 1600}, 5000)
-	var goNord = new TWEEN.Tween(tosaErba.position)
-		.to({ y: 1400}, 5000)
-		.chain(goEst)
+	
+      
+	rayCaster = new THREE.Raycaster();
+	rayCaster.ray.direction.set(0, -1, 0);
+	projector = new THREE.Projector();
+	function onDocumentMouseDown(event) {
+		event.preventDefault();
+		if (document.pointerLockElement === element || document.mozPointerLockElement === element || document.webkitPointerLockElement === element) {
+			var vector = new THREE.Vector3(0, 0, 2);
+			projector.unprojectVector(vector, renderCamera);
+			var raycaster = new THREE.Raycaster(vector, controls.getDirection(new THREE.Vector3(0, 0, 0)).clone());
+		} else {
+			var vector = new THREE.Vector3(( event.clientX / window.innerWidth ) * 2 - 1, -( event.clientY / window.innerHeight ) * 2 + 1, 0.5);
+			projector.unprojectVector(vector, renderCamera);
 
-	var turnleft4 = new TWEEN.Tween(tosaErba.rotation)
-		.to({ z: -2*Math.PI}, 500)
-		.delay(4100)
-	var turnleft3 = new TWEEN.Tween(tosaErba.rotation)
-		.to({ z: -1.5*Math.PI}, 500)
-		.delay(4350)
-		.chain(turnleft4)
-	var turnleft2 = new TWEEN.Tween(tosaErba.rotation)
-		.to({ z: -Math.PI}, 500)
-		.delay(4500)
-		.chain(turnleft3)
-	var turnleft1 = new TWEEN.Tween(tosaErba.rotation)
-		.to({ z: -Math.PI/2}, 500)
-		.delay(4750)
-		.chain(turnleft2)
-
-	setTimeout( function(){ turnleft1.start(); goNord.start()}, 1500);
-	setTimeout( function() { mower_audio.pause() } , 22300);	
-};
-house.add(tosaErba);
-
-
-
-
-
-// Projector
-var projector = new THREE.Projector();
+			var raycaster = new THREE.Raycaster(renderCamera.position, vector.sub(renderCamera.position).normalize());
+			var intersects = raycaster.intersectObjects(toIntersect);
+		}
+		var intersects = raycaster.intersectObjects(toIntersect);
+		if (intersects.length > 0) {
+			intersects[0].object.interact && intersects[0].object.interact();
+		}
+	}
 	document.addEventListener('mousedown', onDocumentMouseDown, false);
 
 
-/* Aggiungo i controlli della GUI */
-var controls = new function() {
-	this.Axis = true;
-	this.Trackball = true;
-	this.Roof = false;
-	this.Day = true;
-	this.TosaErba = function() {
-		tosaErba.animate();
-	}
-	this.TosaErba_Camera = false;
-}
+	var controlGUI = new function() {
+		this.FPS = startFPS;
+		this.enableTrackball = true;
+		this.night = false;
+		this.roof = false;
+		this.TosaErba_Camera = false;
+		this.tosaErba = function() {
+			tosaErba.animate();
+		}
+		this.Goku = function() {
+		if (broke_display.notVisible) {
+			broke_display.notVisible = false;
+			engineSx = new ParticleEngine();
+			engineSx.setValues( Examples.candleSx );			
+			engineSx.initialize();
 
+			engineDx = new ParticleEngine();
+			engineDx.setValues( Examples.candleDx );  			
+			engineDx.initialize();
 
-var gui = new dat.GUI();
+			var sfera = createMesh(new THREE.SphereGeometry( 100, 64, 64 ), "lava.jpg", "lava_bump.jpg", true, 5, 5);
+			sfera.scale.set(0.001, 0.001, 0.001);
+			sfera.position.set(370 , 20, -170);			
+			console.log(sfera.position);
+			console.log(camera.position);
+			var lanciaSfera = new TWEEN.Tween(sfera.position)
+				.to({x: renderCamera.position.x,
+					 y: renderCamera.position.y,
+					 z: renderCamera.position.z}, 2500)
+				.onComplete(function() {
+					renderCamera.add(broke_display);
+					scene.remove(sfera);
+					glass_audio.play(); 
+				})
+				.delay(200)
 
-/* Gestisco i parametri della GUI */
-var trackball_control = gui.add(controls,"Trackball");
-	trackball_control.onChange(function (e) {
-	    trackball_control.trackball = e;
-	});
+			var routaSfera = new TWEEN.Tween(sfera.rotation)
+				.to({x: 2*Math.PI,
+					 y: 2*Math.PI,
+					 z: 2*Math.PI}, 500)
+				.repeat(5)
 
-var roof_control = gui.add(controls,"Roof");
-	roof_control.onChange(function (e) {
-		e ? scene.add(tetto) : scene.remove(tetto)
-	});
+			var creaSfera = new TWEEN.Tween(sfera.scale)
+				.to({x: 1, y: 1,  z: 1}, 2000)
+				.onComplete(function(){
+					engineDx.destroy();
+					engineSx.destroy();
+				})
+			.chain(lanciaSfera,routaSfera)
 
-var axis_control = gui.add(controls,"Axis");
-	axis_control.onChange(function (e) {
-		e ? scene.add(axisHelper) : scene.remove(axisHelper)
-	});
+			setTimeout( function() { scene.add(sfera); creaSfera.start(); kamehameha_audio.play() } , 1500);
+			ripara = gui.add(controlGUI,"Ripara_Schermo");
+			}	
+		};
+		this.Ripara_Schermo = function() {
+			if (!broke_display.notVisible) {
+				renderCamera.remove(broke_display);
+				broke_display.notVisible = true;
+				gui.remove(ripara);
+			}				
+		};
+	};
 
-var day_control = gui.add(controls,"Day");
-	day_control.onChange(function (e) {
+	var gui = new dat.GUI();
+	gui.add(controlGUI, "FPS");
+	gui.add(controlGUI, "enableTrackball");
+	gui.add(controlGUI, "night").onChange( function (e) {
 		if (e) {
-			scene.remove(skybox);
-			esternalLights.spegni();
-			skybox = makeSkyBox('oasisday_');
-			scene.add(skybox);
-		} else {
-			scene.remove(skybox);
+			scene.remove(daySkybox);
 			esternalLights.accendi();
-			skybox = makeSkyBox('oasisnight_');
-			scene.add(skybox);
+			scene.remove(light); scene.remove(light2);
+			scene.add(nightSkybox);
+		} else {
+			scene.remove(nightSkybox);
+			scene.add(daySkybox);
+			scene.add(light); scene.add(light2);
+			esternalLights.spegni();
 		}
 	});
-
-var cameraControl = gui.add(controls, 'TosaErba_Camera');
-	cameraControl.onChange(function (value) {
-		renderCamera = value ? tosaErba_camera : camera;
+	gui.add(controlGUI,"roof").onChange(function (e) {
+		e ? house.add(tetto) : house.remove(tetto)
 	});
+	gui.add(controlGUI,"tosaErba");
+	gui.add(controlGUI,"TosaErba_Camera").onChange(function (e) {
+		renderCamera = e ? tosaErba_camera : camera;
+	});
+	gui.add(controlGUI,"Goku");
+	
+	renderer = new THREE.WebGLRenderer();
+	renderer.setClearColor(0xffffff);
+	renderer.setSize(window.innerWidth, window.innerHeight);
+	document.body.appendChild(renderer.domElement);
 
-	gui.add(controls,"TosaErba");
+	render();
 
-  
-function initStats() {
-	var stats = new Stats();
-	stats.setMode(0); // 0: fps, 1: ms
-	$('body').append(stats.domElement);
-	return stats;
+	function render() {
+		
+		TWEEN.update();
+
+		if (controlGUI.enableTrackball) {
+			trackballControls.update();
+		}
+
+		// first person controls
+		if (FPenabled === true) {
+			computeFPControls();
+		}
+
+		var delta = clock.getDelta();
+			engineSx.update( delta * 0.5 ); 
+			engineDx.update( delta * 0.5 ); 
+
+		// update audio of video
+		if ( video.readyState === video.HAVE_ENOUGH_DATA ) {
+			videoImageContext.drawImage( video, 0, 0 );
+			if ( videoTexture ) 
+			videoTexture.needsUpdate = true;
+			video.updateVolume();
+		}
+
+		if ( video1.readyState === video1.HAVE_ENOUGH_DATA ) {
+			videoImageContext1.drawImage( video1, 0, 0 );
+			if ( videoTexture1 ) 
+			videoTexture1.needsUpdate = true;
+			video1.updateVolume();
+		}
+
+		if ( video2.readyState === video2.HAVE_ENOUGH_DATA ) {
+			videoImageContext2.drawImage( video2, 0, 0 );
+			if ( videoTexture2 ) 
+			videoTexture2.needsUpdate = true;
+			video2.updateVolume();
+		}
+
+		if ( video3.readyState === video3.HAVE_ENOUGH_DATA ) {
+			videoImageContext3.drawImage( video3, 0, 0 );
+			if ( videoTexture3 ) 
+			videoTexture3.needsUpdate = true;
+			video3.updateVolume();
+		}
+
+		if(window.location.pointLock) {
+			controlsFPS.update();
+			computeFPControls();
+		}
+
+		// update audio 
+		brano_audio1.updateVolume();
+		brano_audio2.updateVolume();
+		brano_audio3.updateVolume();
+		brano_audio4.updateVolume();
+		brano_audio5.updateVolume();
+		guitar_audio.updateVolume();
+
+		requestAnimationFrame(render);
+		renderer.render(scene, renderCamera);
+	}
+
+	window.addEventListener('resize', onWindowResize, false);
 }
 
-function onDocumentMouseDown(event) {
-	event.preventDefault();
 
-	// map viewport coordinates in ([-1,1], [-1,1], 0.5)
-	var vector = new THREE.Vector3(( event.clientX / window.innerWidth ) * 2 - 1, -( event.clientY / window.innerHeight ) * 2 + 1, 0.5);
-	projector.unprojectVector(vector, camera);
-
-	var raycaster = new THREE.Raycaster(camera.position, vector.sub(camera.position).normalize());
-
-	var intersects = raycaster.intersectObjects(objects);
-
-	if (intersects.length > 0) {
-		intersects[0].object.animate();
-	}
+function onWindowResize() {
+	renderCamera.aspect = window.innerWidth / window.innerHeight;
+	renderCamera.updateProjectionMatrix();
+	renderer.setSize(window.innerWidth, window.innerHeight);
 }

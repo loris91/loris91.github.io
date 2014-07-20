@@ -69,7 +69,7 @@ function make_White_Door() {
 
 
 	// Gestisco le animazioni per la porta
-	door.animate = function() {
+	door.interact = function() {
 		if (door.isClose) {
 			open_door_audio.play();
 			this.open_door.start();
@@ -174,7 +174,7 @@ function make_Double_Door() {
 
 
 	// Gestisco le animazioni per la porta
-	doorDx.animate = function() {
+	doorDx.interact = function() {
 		if (doorDx.isClose) {
 			open_door_audio.play();
 			this.open_door.start();
@@ -186,7 +186,7 @@ function make_Double_Door() {
 		}
 	}
 
-	doorSx.animate = function() {
+	doorSx.interact = function() {
 		if (doorSx.isClose) {
 			open_door_audio.play();
 			this.open_door.start();
@@ -300,7 +300,7 @@ function make_Security_Door() {
 
 
 	//Gestisco le animazioni per la porta
-	doorSx.animate = function() {
+	doorSx.interact = function() {
 		if (doorSx.isClose) {
 			open_door_audio.play();
 			this.open_door.start();
