@@ -54,7 +54,7 @@ function insertModels(house) {
 	/// Arredamento della cameretta ///
 	///////////////////////////////////
 	loadModel('desk', 1, -15, -290, 40, 1);
-	loadModel('officechair', 1, -475, -25, 163, 0);
+	loadModel('officeChair', 1, -475, -25, 163, 0);
 	loadModel('libreria', 0.8, -215, -150, 200, -0.5);
 	loadModel('electricGuitar', 1, -25, -20, 92, -0.5);
 	loadModel('juniorBed', 1, -235, 40, 40, 0);
